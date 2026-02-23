@@ -116,17 +116,167 @@ const Stat = ({ label, value, color, sub }) => (<div style={{ background: C.p2, 
 const PrioTag = ({ p }) => { const m = { critical: [C.r, C.rBg], high: [C.y, C.yBg], medium: [C.b, C.bBg] }; const [c, bg] = m[p] || [C.txD, C.p3]; return <span style={{ fontSize: 9, fontWeight: 700, padding: "2px 7px", borderRadius: 4, background: bg, color: c, letterSpacing: .3, textTransform: "uppercase" }}>{p}</span>; };
 const ScanBadge = ({ s }) => { const m = { yes: ["COMPLIANT", C.g, C.gBg], partial: ["PARTIAL", C.y, C.yBg], no: ["GAP", C.r, C.rBg] }; const [l, c, bg] = m[s] || ["-", C.txD, C.p3]; return <span style={{ fontSize: 9, fontWeight: 700, padding: "2px 7px", borderRadius: 4, background: bg, color: c }}>{l}</span>; };
 
+// ==================== LANDING PAGE ====================
+function Landing({ onEnter, hasData }) {
+  const [bankName, setBankName] = useState("");
+  const features = [
+    { i: "\u{1F4DC}", t: "DPDP Act Knowledge Base", d: "Complete Act breakdown across 13 sections with banking-specific interpretation and 42+ compliance controls mapped to your operations" },
+    { i: "\u{1F50D}", t: "Interactive Gap Assessment", d: "Answer 42 control questions to measure your actual compliance posture — deterministic scoring based on YOUR answers, not estimates" },
+    { i: "\u{1F4CA}", t: "Compliance Report", d: "Auto-generated report with area-wise breakdown, risk exposure in Rs. crores, and prioritized gap list ready for Board presentation" },
+    { i: "\u{1F5FA}", t: "Implementation Roadmap", d: "One-click Jira backlog with Epics, User Stories in As-a-Role format, GIVEN/WHEN/THEN Acceptance Criteria, and Test Cases" },
+    { i: "\u{1F916}", t: "AI DPDP Advisor", d: "AI assistant trained exclusively on DPDP Act, Rules 2025, RBI cybersecurity directions, and BFSI-specific regulations" },
+  ];
+  const stats = [
+    { v: `${ALL_Q.length}`, l: "Compliance Controls" },
+    { v: ACT.reduce((a, c) => a + c.items.length, 0).toString(), l: "Act Sections Covered" },
+    { v: `${daysLeft()}`, l: "Days to Deadline" },
+    { v: "\u20B9250Cr", l: "Max Penalty Per Violation" },
+  ];
+  return (<div style={{ fontFamily: F, background: C.bg, color: C.tx, minHeight: "100vh" }}>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    {/* Hero */}
+    <div style={{ padding: "60px 24px 50px", textAlign: "center", background: `linear-gradient(180deg, ${C.p1} 0%, ${C.bg} 100%)`, position: "relative", overflow: "hidden" }}>
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: `radial-gradient(ellipse at 50% 0%, rgba(16,185,129,.06) 0%, transparent 70%)` }} />
+      <div style={{ position: "relative", maxWidth: 800, margin: "0 auto" }}>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
+          <div style={{ width: 48, height: 48, borderRadius: 12, background: `linear-gradient(135deg,${C.g},${C.gD})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, fontWeight: 800, color: "#000" }}>P</div>
+          <div style={{ textAlign: "left" }}>
+            <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: -.5 }}>PrivacyShield</div>
+            <div style={{ fontSize: 11, color: C.g, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase" }}>DPDP Compliance Platform</div>
+          </div>
+        </div>
+        <h1 style={{ fontSize: 36, fontWeight: 800, lineHeight: 1.2, margin: "0 0 16px", letterSpacing: -.5 }}>
+          DPDP Act 2023 Compliance<br /><span style={{ color: C.g }}>for Indian Banks & NBFCs</span>
+        </h1>
+        <p style={{ fontSize: 16, color: C.txM, lineHeight: 1.7, maxWidth: 600, margin: "0 auto 32px" }}>
+          Assess your compliance posture, identify gaps, and generate a complete implementation roadmap with Jira-ready stories — in under 30 minutes.
+        </p>
+
+        {/* Bank Name Input + CTA */}
+        <div style={{ maxWidth: 480, margin: "0 auto" }}>
+          <input value={bankName} onChange={e => setBankName(e.target.value)} placeholder="Enter your bank / NBFC name" style={{ width: "100%", padding: "14px 18px", borderRadius: 10, border: `1px solid ${C.bd}`, background: C.p2, color: C.tx, fontSize: 15, fontFamily: F, outline: "none", textAlign: "center", marginBottom: 12, boxSizing: "border-box" }} onFocus={e => e.target.style.borderColor=C.gBd} onBlur={e => e.target.style.borderColor=C.bd} />
+          <button onClick={() => onEnter(bankName.trim() || "Your Bank", false)} style={{ width: "100%", padding: "16px", borderRadius: 10, border: "none", background: `linear-gradient(135deg,${C.g},${C.gD})`, color: "#000", fontSize: 16, fontWeight: 800, cursor: "pointer", fontFamily: F, boxShadow: "0 4px 24px rgba(16,185,129,.3)", transition: "transform .15s" }} onMouseOver={e => e.target.style.transform="translateY(-2px)"} onMouseOut={e => e.target.style.transform="none"}>
+            Start Compliance Assessment
+          </button>
+          {hasData && <button onClick={() => onEnter(bankName.trim() || "Your Bank", true)} style={{ width: "100%", padding: "12px", borderRadius: 10, border: `1px solid ${C.gBd}`, background: C.gBg, color: C.g, fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: F, marginTop: 8 }}>
+            Resume Previous Assessment
+          </button>}
+          <div style={{ fontSize: 12, color: C.txD, marginTop: 10 }}>Free gap analysis {"\u2022"} No signup required {"\u2022"} Takes ~20 minutes</div>
+        </div>
+      </div>
+    </div>
+
+    {/* Stats Bar */}
+    <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 24px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12, padding: "24px 0", borderBottom: `1px solid ${C.bd}` }}>
+        {stats.map(s => (<div key={s.l} style={{ textAlign: "center" }}>
+          <div style={{ fontSize: 28, fontWeight: 800, color: C.g, fontFamily: M }}>{s.v}</div>
+          <div style={{ fontSize: 11, color: C.txD, marginTop: 2 }}>{s.l}</div>
+        </div>))}
+      </div>
+    </div>
+
+    {/* Deadline Warning */}
+    <div style={{ maxWidth: 900, margin: "0 auto", padding: "24px 24px 0" }}>
+      <div style={{ background: C.rBg, border: `1px solid ${C.rBd}`, borderRadius: 10, padding: "16px 20px", display: "flex", alignItems: "center", gap: 14 }}>
+        <div style={{ fontSize: 28 }}>{"\u26A0\uFE0F"}</div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: C.r }}>Compliance Deadline: May 13, 2027</div>
+          <div style={{ fontSize: 12, color: C.txM, marginTop: 2 }}>The DPDP Act is now law. Banks processing personal data without compliance face penalties up to {"\u20B9"}250 crore per violation. Non-compliance is not an option.</div>
+        </div>
+        <div style={{ fontSize: 24, fontWeight: 800, color: C.r, fontFamily: M, whiteSpace: "nowrap" }}>{daysLeft()}d</div>
+      </div>
+    </div>
+
+    {/* Features */}
+    <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px 24px" }}>
+      <div style={{ textAlign: "center", marginBottom: 24 }}>
+        <div style={{ fontSize: 10, fontWeight: 700, color: C.g, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 6 }}>Platform Capabilities</div>
+        <div style={{ fontSize: 22, fontWeight: 800 }}>Everything You Need for DPDP Compliance</div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+        {features.map((f, i) => (<div key={i} style={{ background: C.p2, border: `1px solid ${C.bd}`, borderRadius: 10, padding: "18px 20px", transition: "border-color .15s" }} onMouseOver={e => e.currentTarget.style.borderColor=C.bdL} onMouseOut={e => e.currentTarget.style.borderColor=C.bd}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+            <span style={{ fontSize: 22 }}>{f.i}</span>
+            <span style={{ fontSize: 14, fontWeight: 700 }}>{f.t}</span>
+          </div>
+          <div style={{ fontSize: 12, color: C.txM, lineHeight: 1.6 }}>{f.d}</div>
+        </div>))}
+      </div>
+    </div>
+
+    {/* How It Works */}
+    <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 24px 32px" }}>
+      <div style={{ textAlign: "center", marginBottom: 24 }}>
+        <div style={{ fontSize: 10, fontWeight: 700, color: C.g, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 6 }}>How It Works</div>
+        <div style={{ fontSize: 22, fontWeight: 800 }}>From Assessment to Implementation in 4 Steps</div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 10 }}>
+        {[
+          { n: "1", t: "Learn", d: "Understand every DPDP provision with banking-specific interpretation" },
+          { n: "2", t: "Assess", d: "Answer 42 control questions to measure your actual compliance posture" },
+          { n: "3", t: "Report", d: "Get a scored compliance report with area breakdown and risk exposure" },
+          { n: "4", t: "Implement", d: "Generate Jira epics with stories, acceptance criteria, and test cases" },
+        ].map(s => (<div key={s.n} style={{ background: C.p2, border: `1px solid ${C.bd}`, borderRadius: 10, padding: "16px", textAlign: "center" }}>
+          <div style={{ width: 32, height: 32, borderRadius: "50%", background: C.gBg, border: `1px solid ${C.gBd}`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 10px", fontSize: 14, fontWeight: 800, color: C.g, fontFamily: M }}>{s.n}</div>
+          <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 4 }}>{s.t}</div>
+          <div style={{ fontSize: 11, color: C.txM, lineHeight: 1.5 }}>{s.d}</div>
+        </div>))}
+      </div>
+    </div>
+
+    {/* Trusted By / Social Proof */}
+    <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 24px 32px" }}>
+      <div style={{ background: C.p2, border: `1px solid ${C.bd}`, borderRadius: 10, padding: "20px 24px", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
+        {[
+          { t: "Built for Indian Banking", d: "References Finacle, BaNCS, UPI, NACH, CKYC, Account Aggregator framework" },
+          { t: "RBI + DPDP Combined", d: "Maps DPDP requirements against RBI cybersecurity directions and digital lending guidelines" },
+          { t: "On-Premise Ready", d: "Air-gapped deployment for banks that cannot use cloud. Your data never leaves your infrastructure" },
+        ].map(x => (<div key={x.t}><div style={{ fontSize: 13, fontWeight: 700, color: C.g, marginBottom: 4 }}>{x.t}</div><div style={{ fontSize: 11, color: C.txM, lineHeight: 1.5 }}>{x.d}</div></div>))}
+      </div>
+    </div>
+
+    {/* Bottom CTA */}
+    <div style={{ textAlign: "center", padding: "16px 24px 60px" }}>
+      <button onClick={() => onEnter(bankName.trim() || "Your Bank", false)} style={{ padding: "16px 48px", borderRadius: 10, border: "none", background: `linear-gradient(135deg,${C.g},${C.gD})`, color: "#000", fontSize: 16, fontWeight: 800, cursor: "pointer", fontFamily: F, boxShadow: "0 4px 24px rgba(16,185,129,.3)" }}>
+        Start Your DPDP Assessment Now
+      </button>
+    </div>
+
+    {/* Footer */}
+    <div style={{ borderTop: `1px solid ${C.bd}`, padding: "20px 24px", textAlign: "center" }}>
+      <div style={{ fontSize: 11, color: C.txD }}>PrivacyShield Technologies Pvt. Ltd. | contact@privacyshield.in</div>
+    </div>
+  </div>);
+}
+
 // ==================== MAIN APP ====================
 export default function App() {
+  const [started, setStarted] = useState(false);
+  const [bankName, setBankName] = useState("Your Bank");
   const [tab, setTab] = useState("act");
   const [answers, setAnswers] = useState({});
   const [scanDone, setScanDone] = useState(false);
   const [jiraData, setJiraData] = useState(null);
+  const [hasData, setHasData] = useState(false);
 
   useEffect(() => { (async () => {
-    try { const a = await window.storage.get("ps2_answers"); if (a) { setAnswers(JSON.parse(a.value)); setScanDone(true); } } catch {}
+    try { const a = await window.storage.get("ps2_answers"); if (a) { const parsed = JSON.parse(a.value); setAnswers(parsed); setScanDone(true); setHasData(Object.keys(parsed).length > 0); } } catch {}
     try { const j = await window.storage.get("ps2_jira"); if (j) setJiraData(JSON.parse(j.value)); } catch {}
+    try { const b = await window.storage.get("ps2_bank"); if (b) setBankName(b.value); } catch {}
   })(); }, []);
+
+  const handleEnter = async (name, resume) => {
+    setBankName(name);
+    try { await window.storage.set("ps2_bank", name); } catch {}
+    if (!resume) {
+      setAnswers({}); setScanDone(false); setJiraData(null);
+      try { await window.storage.delete("ps2_answers"); } catch {}
+      try { await window.storage.delete("ps2_jira"); } catch {}
+    }
+    setStarted(true);
+  };
 
   const saveAnswers = async (a) => { setAnswers(a); try { await window.storage.set("ps2_answers", JSON.stringify(a)); } catch {} };
   const saveJira = async (d) => { setJiraData(d); try { await window.storage.set("ps2_jira", JSON.stringify(d)); } catch {} };
@@ -135,6 +285,8 @@ export default function App() {
   const gaps = useMemo(() => ALL_Q.filter(q => answers[q.id] === "no"), [answers]);
   const partials = useMemo(() => ALL_Q.filter(q => answers[q.id] === "partial"), [answers]);
   const compliant = useMemo(() => ALL_Q.filter(q => answers[q.id] === "yes"), [answers]);
+
+  if (!started) return <Landing onEnter={handleEnter} hasData={hasData} />;
 
   const TABS = [
     { k: "act", l: "DPDP Act", s: "Knowledge Base", i: "\u{1F4DC}" },
@@ -147,9 +299,9 @@ export default function App() {
   return (<div style={{ fontFamily: F, background: C.bg, color: C.tx, minHeight: "100vh" }}>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <div style={{ background: C.p1, borderBottom: `1px solid ${C.bd}`, padding: "0 24px", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }} onClick={() => setStarted(false)}>
         <div style={{ width: 30, height: 30, borderRadius: 7, background: `linear-gradient(135deg,${C.g},${C.gD})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 800, color: "#000" }}>P</div>
-        <div><span style={{ fontSize: 15, fontWeight: 800 }}>PrivacyShield</span><span style={{ fontSize: 10, color: C.txD, marginLeft: 8 }}>DPDP Compliance Platform</span></div>
+        <div><span style={{ fontSize: 15, fontWeight: 800 }}>PrivacyShield</span><span style={{ fontSize: 10, color: C.txD, marginLeft: 8 }}>|</span><span style={{ fontSize: 12, color: C.g, fontWeight: 700, marginLeft: 8 }}>{bankName}</span></div>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
         {score !== null && <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontSize: 10, color: C.txD }}>Score</span><span style={{ fontSize: 14, fontWeight: 800, color: score >= 70 ? C.g : score >= 40 ? C.y : C.r, fontFamily: M }}>{score}/100</span></div>}
